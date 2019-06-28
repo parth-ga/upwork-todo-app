@@ -1,0 +1,131 @@
+<div class="container">
+  <div class="table-wrapper">
+    <div class="table-title">
+      <div class="row">
+        <div class="col-sm-6">
+          <h2><b>To-do</b></h2>
+        </div>
+        <div class="col-sm-6">
+          <a class="btn btn-success" (click)="openModal(addPostModal)"><i class="material-icons">&#xE147;</i>
+            <span>Add to-do</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+      <thead>
+        <tr>
+          <th><input type="checkbox" [checked]="false" (change)="selectAllTodo($event)"></th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>To-do Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let todo of todos;let i=index">
+          <td><input type="checkbox" [checked]="todo.isSelected" (change)="selectTodo(i)"></td>
+          <td>{{todo.name}}</td>
+          <td>{{todo.description}}</td>
+          <td>{{todo.date|date:'short'}}</td>
+          <td>
+            <a href="" class="edit" data-toggle="modal" (click)="openModal(editPostModal,todo)">
+              <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
+            </a>
+            <a href="" class="delete" data-toggle="modal" (click)="openModal(deletePostModal,todo)">
+              <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div>
+      <button class="btn btn-success" (click)="openModal(deletePostModal)">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Modal HTML -->
+<ng-template #addPostModal>
+  <form #todo="ngForm" name="todo" (submit)="addTodo(todo);">
+    <div class="modal-header">
+      <h4 class="modal-title">Add Todo</h4>
+      <button type="button" tabindex="-5" class="close" (click)="closeModal()" aria-hidden="true">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" class="form-control" placeholder="Enter title" name="name" [(ngModel)]="todoData.name"
+          required>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-control" placeholder="Enter description" rows="6" [(ngModel)]="todoData.description"
+          name="body" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>To-do DateTime</label>
+        <input [owlDateTime]="dt1" type="datetime" [min]="minDate" class="form-control" name="date"
+          [(ngModel)]="todoData.date" [owlDateTimeTrigger]="dt1" autocomplete="off" placeholder="Select Date-Time"
+          readonly required>
+        <owl-date-time #dt1></owl-date-time>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <input type="button" class="btn btn-default" (click)="closeModal()" value="Cancel">
+      <input type="submit" class="btn btn-success" [disabled]="todo.invalid" value="Add">
+    </div>
+  </form>
+</ng-template>
+
+<!-- Edit Modal HTML -->
+<ng-template #editPostModal>
+  <form #editPost="ngForm" name="editPost" (submit)="saveEditTodo()">
+    <div class="modal-header">
+      <h4 class="modal-title">Edit Todo</h4>
+      <button type="button" class="close" (click)="closeModal()" aria-hidden="true">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" class="form-control" placeholder="Enter title" name="name" [(ngModel)]="selectedTodo.name"
+          required>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea class="form-control" placeholder="Enter description" rows="6" [(ngModel)]="selectedTodo.description"
+          name="body" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>To-do DateTime</label>
+        <input [owlDateTime]="dt1" type="datetime" [min]="minDate" class="form-control" name="date"
+          [(ngModel)]="selectedTodo.date" [owlDateTimeTrigger]="dt1" autocomplete="off" placeholder="Select Date-Time"
+          readonly required>
+        <owl-date-time #dt1></owl-date-time>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <input type="button" class="btn btn-default" (click)="closeModal()" value="Cancel">
+      <input type="submit" class="btn btn-info" value="Save">
+    </div>
+  </form>
+
+</ng-template>
+
+<!-- Delete Modal HTML -->
+<ng-template #deletePostModal>
+  <form>
+    <div class="modal-header">
+      <h4 class="modal-title">Delete Todo</h4>
+      <button type="button" class="close" (click)="closeModal()" aria-hidden="true">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>Are you sure you want to delete these Records?</p>
+      <p class="text-warning"><small>This action cannot be undone.</small></p>
+    </div>
+    <div class="modal-footer">
+      <input type="button" class="btn btn-default" (click)="closeModal()" value="Cancel">
+      <input type="button" class="btn btn-danger" value="Delete" (click)="deletePost()">
+    </div>
+  </form>
+</ng-template>
